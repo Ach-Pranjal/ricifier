@@ -518,10 +518,17 @@ def main(argv=None):
         mood = analyze_wallpaper(data)
         theme = design_theme(data, mood, palette)
         aesthetic = generate_aesthetic(data, mood, theme, palette)
+        from app_configs import detect_apps, generate_configs
+
+        apps = detect_apps()
+        configs = generate_configs(theme, aesthetic, apps=apps)
         print(json.dumps({
+            "palette": palette,
             "mood": mood,
             "theme": theme,
             "aesthetic": aesthetic,
+            "detected_apps": apps,
+            "configs": configs,
         }, indent=2))
     except (OSError, ValueError, RuntimeError) as error:
         print(f"ml_model.py: {error}", file=sys.stderr)
