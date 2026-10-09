@@ -12,9 +12,9 @@
   "app": {
     "windows": [
       {
-        "title": "ricifier",
-        "width": 800,
-        "height": 600
+        "title": "Ricifier",
+        "width": 1280,
+        "height": 720
       }
     ],
     "security": {
