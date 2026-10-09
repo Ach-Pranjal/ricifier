@@ -19,6 +19,7 @@ from typing import Any
 
 CACHE_VERSION = 1
 DEFAULT_CACHE_DIR = Path.home() / ".cache" / "ricifier" / "docs"
+DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "output"
 
 APP_SPECS: dict[str, dict[str, Any]] = {
     "kitty": {
@@ -221,6 +222,21 @@ def render_config(name: str, settings: dict[str, Any]) -> str:
 
     validate_config(name, text)
     return text + "\n"
+
+
+def write_configs(
+    configs: dict[str, dict[str, Any]],
+    *,
+    output_dir: Path = DEFAULT_OUTPUT_DIR,
+) -> None:
+    """Write validated generated configuration text to the output directory."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for name, config in configs.items():
+        config_name = APP_SPECS[name]["config_name"]
+        (output_dir / config_name).write_text(
+            config["text"],
+            encoding="utf-8",
+        )
 
 
 def generate_configs(

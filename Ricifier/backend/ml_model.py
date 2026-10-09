@@ -518,10 +518,11 @@ def main(argv=None):
         mood = analyze_wallpaper(data)
         theme = design_theme(data, mood, palette)
         aesthetic = generate_aesthetic(data, mood, theme, palette)
-        from app_configs import detect_apps, generate_configs
+        from app_configs import detect_apps, generate_configs, write_configs
 
         apps = detect_apps()
         configs = generate_configs(theme, aesthetic, apps=apps)
+        write_configs(configs)
         print(json.dumps({
             "palette": palette,
             "mood": mood,
