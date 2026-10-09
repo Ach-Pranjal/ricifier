@@ -137,6 +137,28 @@ def _number(value: str) -> float:
     return float(_NUMBER_WORDS.get(value.lower(), value))
 
 
+def _classify_capability(name: str, param_type: ParamType) -> Capability:
+    """Classify presentation settings conservatively from their names and type."""
+    if param_type is ParamType.COLOR:
+        return Capability.COLORS
+    tokens = set(re.split(r"[_\-.]", name.lower()))
+    if tokens & {"font", "family", "typeface", "size", "line", "text"}:
+        return Capability.TYPOGRAPHY
+    if tokens & {
+        "padding", "margin", "gap", "gaps", "radius", "border",
+        "width", "height", "spacing",
+    }:
+        return Capability.GEOMETRY
+    if tokens & {
+        "opacity", "transparent", "transparency", "blur", "shadow",
+        "effect", "effects",
+    }:
+        return Capability.VISUAL_EFFECTS
+    if tokens & {"bar", "panel", "position", "layout", "tab"}:
+        return Capability.LAYOUT
+    return Capability.UNKNOWN
+
+
 def _document_constraints(
     default_text: str,
     block: list[str],
@@ -209,8 +231,18 @@ def _add_record(
         param_type, constraints, default, description = _document_constraints(
             default_text, block,
         )
-    capability = Capability.COLORS if param_type is ParamType.COLOR else Capability.UNKNOWN
-    risk = RiskLevel.SAFE if capability is Capability.COLORS else RiskLevel.REVIEW
+    capability = _classify_capability(name, param_type)
+    risk = (
+        RiskLevel.SAFE
+        if capability in {
+            Capability.COLORS,
+            Capability.TYPOGRAPHY,
+            Capability.GEOMETRY,
+            Capability.VISUAL_EFFECTS,
+            Capability.LAYOUT,
+        }
+        else RiskLevel.REVIEW
+    )
     records.append(ParameterRecord(
         id=f"{app_id}.{name}",
         name=name,

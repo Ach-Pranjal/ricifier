@@ -2,7 +2,11 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from backend.final_generation import build_plan
+from config_generation.schemas import ConfigPlan, Manifest, ParameterCatalog, PlanItem
 from config_generation.onboarding import onboard
+from config_generation.renderers import render_key_value
+from config_generation.policy import validate_plan
 
 
 class OnboardingTests(unittest.TestCase):
@@ -78,3 +82,112 @@ class OnboardingTests(unittest.TestCase):
             opacity = parameters["background_opacity"]
             self.assertEqual(opacity["constraints"]["min"], 0)
             self.assertEqual(opacity["constraints"]["max"], 1)
+
+    def test_final_plan_maps_design_values_to_catalog(self):
+        catalog = ParameterCatalog.model_validate({
+            "app_id": "sample",
+            "parameters": [
+                {
+                    "id": "sample.background",
+                    "name": "background",
+                    "type": "color",
+                    "capability": "colors",
+                    "constraints": {"pattern": r"^#[0-9a-fA-F]{6}$"},
+                    "risk": {"level": "safe", "classified_by": "rule"},
+                    "verification": {"status": "reviewed", "extracted_by": "deterministic"},
+                },
+                {
+                    "id": "sample.font_size",
+                    "name": "font_size",
+                    "type": "float",
+                    "capability": "typography",
+                    "constraints": {"min": 9, "max": 16},
+                    "verification": {"status": "reviewed", "extracted_by": "deterministic"},
+                },
+            ],
+        })
+        plan = build_plan(
+            "sample",
+            catalog,
+            {"background": {"color": "#112233"}},
+            {"typography": {"size": 12}},
+        )
+        self.assertEqual(
+            [(item.parameter_id, item.value) for item in plan.items],
+            [("sample.background", "#112233"), ("sample.font_size", 12)],
+        )
+
+    def test_presentation_settings_receive_safe_capabilities(self):
+        with tempfile.TemporaryDirectory() as directory:
+            tmp_path = Path(directory)
+            docs = tmp_path / "kitty.conf"
+            docs.write_text(
+                "background #112233\n"
+                "font_size 11.0\n"
+                "window_padding_width 4\n"
+                "background_opacity 1.0\n",
+                encoding="utf-8",
+            )
+            paths = onboard("kitty", "Kitty", [str(docs)], tmp_path / "kitty")
+            parameters = {
+                item["name"]: item
+                for item in __import__("json").loads(
+                    paths["catalog"].read_text(encoding="utf-8")
+                )["parameters"]
+            }
+            self.assertEqual(parameters["font_size"]["capability"], "typography")
+            self.assertEqual(parameters["window_padding_width"]["capability"], "geometry")
+            self.assertEqual(parameters["background_opacity"]["capability"], "visual_effects")
+
+    def test_policy_result_can_be_rendered(self):
+        catalog = ParameterCatalog.model_validate({
+            "app_id": "sample",
+            "parameters": [
+                {
+                    "id": "sample.background",
+                    "name": "background",
+                    "type": "color",
+                    "capability": "colors",
+                    "constraints": {"pattern": r"^#[0-9a-fA-F]{6}$"},
+                    "risk": {"level": "safe", "classified_by": "rule"},
+                    "verification": {"status": "reviewed", "extracted_by": "deterministic"},
+                },
+            ],
+        })
+        parameter = catalog.parameters[0]
+        output = render_key_value([(parameter, "#112233")])
+        self.assertIn("background #112233", output)
+
+    def test_policy_result_summary_uses_parameter_id(self):
+        catalog = ParameterCatalog.model_validate({
+            "app_id": "sample",
+            "parameters": [
+                {
+                    "id": "sample.background",
+                    "name": "background",
+                    "type": "color",
+                    "capability": "colors",
+                    "constraints": {"pattern": r"^#[0-9a-fA-F]{6}$"},
+                    "risk": {"level": "safe", "classified_by": "rule"},
+                    "verification": {"status": "reviewed", "extracted_by": "deterministic"},
+                },
+            ],
+        })
+        manifest = Manifest.model_validate({
+            "id": "sample",
+            "display_name": "Sample",
+            "tier": "generic",
+            "config": {"format": "key-value"},
+        })
+        result = validate_plan(
+            ConfigPlan(
+                app_id="sample",
+                items=[PlanItem(parameter_id="sample.background", value="#112233")],
+            ),
+            catalog,
+            manifest,
+        )
+        self.assertEqual(
+            [item.parameter_id for _, _, item in result.accepted],
+            ["sample.background"],
+        )
