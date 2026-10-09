@@ -15,7 +15,7 @@ def _to_oklab(rgb):
     ], axis=1)
 
 
-def extract_palette(image_path, n=8, k=16):
+def extract_palette(image_path, n=8, k=24):
     """Return n distinct, representative colors as hex strings."""
     img = Image.open(image_path).convert("RGB")
     img.thumbnail((128, 128))
@@ -41,7 +41,7 @@ def extract_palette(image_path, n=8, k=16):
             continue
         share = mask.mean()
         chroma = float(np.hypot(centers[i][1], centers[i][2]))
-        score = (share ** 0.5) * (1.0 + 1.5 * chroma)
+        score = (share ** 0.5) * (0.3 + chroma * 5)
         rgb = (px[mask].mean(axis=0) * 255).round().astype(int)
         clusters.append((score, centers[i], "#%02x%02x%02x" % tuple(rgb)))
     clusters.sort(key=lambda c: c[0], reverse=True)
@@ -49,7 +49,7 @@ def extract_palette(image_path, n=8, k=16):
     # pick the best, skipping colors too close to one already chosen
     picked = []
     for score, center, hex_color in clusters:
-        if all(np.linalg.norm(center - p[0]) > 0.05 for p in picked):
+        if all(np.linalg.norm(center - p[0]) > 0.10 for p in picked):
             picked.append((center, hex_color))
         if len(picked) == n:
             break
