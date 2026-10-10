@@ -1,136 +1,132 @@
-"""Test for ml_model.py.
+"""End-to-end wallpaper test for Ricifier.
 
-Part 1 runs offline (no API calls, instant).
-Part 2 makes 3 real Gemma requests.
+This intentionally makes real Gemini requests. It is useful for checking the
+complete wallpaper -> mood -> theme -> aesthetic -> five app configs path.
 
-Run:
-    python test_ml_model.py D:\\path\\to\\wallpaper.jpg
+Run from the project root:
+
+    GEMINI_API_KEY=your-key python backend/test_ml_model.py wallpaper.jpg
+
+After the first run, the generated design can be reused without an API call:
+
+    python backend/test_ml_model.py --mood-json output/mood.json --apps kitty rofi
 """
-import io
+
+from __future__ import annotations
+
+import argparse
+import json
 import os
 import sys
-import time
-from PIL import Image
+from pathlib import Path
 
-import ml_model as mm
+from PIL import UnidentifiedImageError
+
+from app_configs import APP_SPECS, generate_configs, write_configs
 from processor import extract_palette
 
-passed = 0
-failed = 0
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run the real Ricifier wallpaper-to-config pipeline."
+    )
+    parser.add_argument(
+        "wallpaper", type=Path, nargs="?",
+        help="Path to a wallpaper image; omit it when --mood-json is used",
+    )
+    parser.add_argument(
+        "--mood-json", type=Path,
+        help="Previously generated mood/design JSON to reuse without Gemini",
+    )
+    parser.add_argument(
+        "--apps", nargs="+", choices=sorted(APP_SPECS), metavar="APP",
+        help="Apps to generate (default: all five)",
+    )
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=Path("output"),
+        help="Directory for generated app configs (default: output)",
+    )
+    return parser.parse_args()
 
 
-def check(name, condition):
-    global passed, failed
-    if condition:
-        passed += 1
-        print("PASS:", name)
-    else:
-        failed += 1
-        print("FAIL:", name)
+def main() -> int:
+    args = _parse_args()
+    if bool(args.wallpaper) == bool(args.mood_json):
+        print("ERROR: provide exactly one of a wallpaper image or --mood-json.", file=sys.stderr)
+        return 2
+
+    try:
+        if args.mood_json:
+            if not args.mood_json.is_file():
+                print(f"ERROR: mood JSON does not exist: {args.mood_json}", file=sys.stderr)
+                return 2
+            saved = json.loads(args.mood_json.read_text(encoding="utf-8"))
+            mood = saved.get("mood", {})
+            theme = saved["theme"]
+            aesthetic = saved["aesthetic"]
+        else:
+            api_key = os.environ.get("GEMINI_API_KEY")
+            if not api_key:
+                print("ERROR: GEMINI_API_KEY is not set.", file=sys.stderr)
+                return 2
+            if not args.wallpaper.is_file():
+                print(f"ERROR: wallpaper does not exist: {args.wallpaper}", file=sys.stderr)
+                return 2
+            import ml_model as mm
+
+            data = args.wallpaper.read_bytes()
+            palette = extract_palette(args.wallpaper)
+            mood = mm.analyze_wallpaper(data)
+            theme = mm.design_theme(data, mood, palette)
+            aesthetic = mm.generate_aesthetic(data, mood, theme, palette)
+
+        selected = args.apps or list(APP_SPECS)
+        apps = {name: {"version": "test"} for name in selected}
+        errors: dict[str, str] = {}
+        configs = generate_configs(
+            theme,
+            aesthetic,
+            mood=mood,
+            apps=apps,
+            errors=errors,
+        )
+        if errors:
+            for name, message in errors.items():
+                print(f"ERROR: {name}: {message}", file=sys.stderr)
+            return 1
+        if set(configs) != set(selected):
+            missing = sorted(set(selected) - set(configs))
+            print(f"ERROR: missing generated apps: {', '.join(missing)}", file=sys.stderr)
+            return 1
+
+        written = write_configs(configs, output_dir=args.out)
+        if not args.mood_json:
+            args.out.mkdir(parents=True, exist_ok=True)
+            (args.out / "mood.json").write_text(
+                json.dumps({
+                    "mood": mood,
+                    "theme": theme,
+                    "aesthetic": aesthetic,
+                    "palette": palette,
+                }, indent=2),
+                encoding="utf-8",
+            )
+    except (OSError, UnidentifiedImageError, ValueError, RuntimeError) as error:
+        print(f"ERROR: pipeline failed: {error}", file=sys.stderr)
+        return 1
+
+    print("PASS: real Gemini pipeline completed")
+    print(f"mood: {json.dumps(mood, ensure_ascii=False)}")
+    print(f"style: {aesthetic['visual_style']['label']}")
+    print(f"apps: {', '.join(sorted(configs))}")
+    if not args.mood_json:
+        print(f"saved: {args.out / 'mood.json'}")
+    for path in written:
+        print(f"wrote: {path}")
+    return 0
 
 
-# ================= PART 1: offline tests =================
-print("--- Part 1: offline (fake Gemma replies) ---")
-
-real_generate = mm._generate
-
-buf = io.BytesIO()
-Image.new("RGB", (8, 8), "#223344").save(buf, format="PNG")
-tiny = buf.getvalue()
-
-PALETTE = ["#1b1f2a", "#7a9fc2", "#d6d9e0", "#c26a6a", "#8fb573"]
-THEME = {r: {"color": c, "reason": ""} for r, c in
-         zip(mm.ROLES, ("#1b1f2a", "#d6d9e0", "#7a9fc2"))}
-MOOD = {"mode": "dark", "warmth": 0, "contrast": 3, "style": "", "style_notes": "", "summary": ""}
-
-
-def fake(reply):
-    mm._generate = lambda contents, tries=4: reply
-
-
-# junk values in the mood must be corrected
-fake('{"mode": "purple", "warmth": 99, "contrast": "abc", "style": 5}')
-m = mm.analyze_wallpaper(tiny)
-check("bad mode falls back to dark", m["mode"] == "dark")
-check("warmth is clamped to 5", m["warmth"] == 5)
-check("non-number contrast falls back to 3", m["contrast"] == 3)
-
-# fenced JSON is accepted
-fake('```json\n{"mode": "light"}\n```')
-check("```json fences are stripped", mm.analyze_wallpaper(tiny)["mode"] == "light")
-
-# no JSON at all must raise a clear error
-fake("Sorry, I can't help with that.")
-try:
-    mm.analyze_wallpaper(tiny)
-    check("reply with no JSON raises ValueError", False)
-except ValueError:
-    check("reply with no JSON raises ValueError", True)
-
-# a color that is not in the palette is replaced by the nearest one
-fake('{"background": {"color": "#000000", "reason": "x"},'
-     ' "foreground": {"color": "nonsense", "reason": "x"},'
-     ' "accent": {"color": "#7a9fc3", "reason": "x"}}')
-t = mm.design_theme(tiny, MOOD, PALETTE)
-check("off-palette colors are snapped into the palette",
-      all(t[r]["color"] in PALETTE for r in mm.ROLES))
-
-# the aesthetic step must reject invented values
-if hasattr(mm, "generate_aesthetic"):
-    fake('{"typography": {"family": "Comic Sans", "size": 500},'
-         ' "geometry": {"panel_style": "banana", "corner_radius": -9},'
-         ' "visual_hierarchy": {"active_border": "#1b1f2a", "inactive_border": "#1b1f2a"}}')
-    a = mm.generate_aesthetic(tiny, MOOD, THEME, PALETTE)
-    check("unknown font is replaced by an allowed one", a["typography"]["family"] in mm.FONTS)
-    check("font size is clamped to 16", a["typography"]["size"] == 16)
-    check("unknown panel style falls back", a["geometry"]["panel_style"] in mm.PANEL_STYLES)
-    check("negative radius is clamped to 0", a["geometry"]["corner_radius"] == 0)
-    check("active and inactive borders always differ",
-          a["visual_hierarchy"]["active_border"] != a["visual_hierarchy"]["inactive_border"])
-    check("fallback fonts end with monospace", a["typography"]["fallbacks"][-1] == "monospace")
-
-mm._generate = real_generate
-
-# ================= PART 2: real Gemma run =================
-if len(sys.argv) < 2:
-    print("\nNo wallpaper given, so Part 2 is skipped.")
-else:
-    path = os.path.expanduser(sys.argv[1])
-    print("\n--- Part 2: real Gemma run on", path, "---")
-    palette = extract_palette(path)
-    print("palette:", palette)
-    check("palette colors are lowercase hex", all(c == c.lower() and c.startswith("#") for c in palette))
-    data = open(path, "rb").read()
-
-    mood = mm.analyze_wallpaper(data)
-    print("mood:", mood)
-    check("mood mode is dark or light", mood["mode"] in ("dark", "light"))
-    check("warmth is between -5 and 5", -5 <= mood["warmth"] <= 5)
-    check("contrast is between 1 and 5", 1 <= mood["contrast"] <= 5)
-    check("style_notes is not empty", len(mood["style_notes"]) > 0)
-
-    time.sleep(2)
-    theme = mm.design_theme(data, mood, palette)
-    print("theme:", theme)
-    check("every chosen color is in the measured palette",
-          all(theme[r]["color"] in palette for r in mm.ROLES))
-    check("every role has a reason", all(len(theme[r]["reason"]) > 0 for r in mm.ROLES))
-    if hasattr(mm, "_contrast"):
-        best = max(mm._contrast(theme["background"]["color"], p) for p in palette)
-        got = mm._contrast(theme["background"]["color"], theme["foreground"]["color"])
-        check("foreground is readable (4.5:1, or the best the palette allows)",
-              got >= min(4.5, best) - 0.01)
-
-    if hasattr(mm, "generate_aesthetic"):
-        time.sleep(2)
-        aes = mm.generate_aesthetic(data, mood, theme, palette)
-        print("aesthetic:", aes)
-        check("visual style is an allowed label", aes["visual_style"]["label"] in mm.STYLES)
-        check("font is from the allowed list", aes["typography"]["family"] in mm.FONTS)
-        check("borders come from the palette",
-              aes["visual_hierarchy"]["active_border"] in palette
-              and aes["visual_hierarchy"]["inactive_border"] in palette)
-        check("design rationale is not empty", len(aes["design_rationale"]) > 0)
-
-print(f"\n{passed} passed, {failed} failed.")
-sys.exit(1 if failed else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())

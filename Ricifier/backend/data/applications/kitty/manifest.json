@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "id": "kitty",
+  "display_name": "Kitty",
+  "tier": "generic",
+  "config": {
+    "format": "key-value",
+    "files": [
+      {
+        "role": "main",
+        "path": "~/.config/kitty/kitty.conf"
+      }
+    ]
+  },
+  "version": {
+    "detect_argv": [],
+    "documented": null,
+    "supported_range": null
+  },
+  "doc_sources": [
+    {
+      "id": "source-1-0b968688ec",
+      "kind": "user_url",
+      "uri": "https://sw.kovidgoyal.net/kitty/conf/",
+      "doc_version": null,
+      "retrieved_at": "2026-10-09T23:23:02.624948+00:00",
+      "content_hash": "57d6ae80da41fc90b364c578fc0fcfd3ff181836d915016e79f57bfe0704c5cc",
+      "normalized_path": null,
+      "status": "ingested"
+    }
+  ],
+  "catalog": {
+    "path": "parameters.json",
+    "built_from": {
+      "source-1-0b968688ec": "57d6ae80da41fc90b364c578fc0fcfd3ff181836d915016e79f57bfe0704c5cc"
+    },
+    "extractor_version": "2",
+    "built_at": "2026-10-09T23:23:02.639715+00:00"
+  },
+  "support": {
+    "status": "experimental",
+    "renderer": "generic:key-value",
+    "policy_overrides": {
+      "deny_capabilities": [],
+      "deny_parameters": []
+    }
+  }
+}

@@ -6,9 +6,8 @@ import shutil
 import subprocess
 import sys
 import time
+from pathlib import Path
 
-from google import genai
-from google.genai import errors, types
 from PIL import Image
 
 # Change the model without editing code:  export RICER_MODEL="gemma-4-31b-it"
@@ -23,6 +22,8 @@ def _get_client():
     """Create the Gemini client only when an API request is actually needed."""
     global client
     if client is None:
+        from google import genai
+
         api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             raise RuntimeError(
@@ -34,6 +35,8 @@ def _get_client():
 
 def _generate(contents, tries=4):
     """Ask Gemma something. Retry only on temporary errors (429 = rate limit, 500/503 = server busy)."""
+    from google.genai import errors, types
+
     for attempt in range(tries):
         try:
             return _get_client().models.generate_content(
@@ -59,6 +62,8 @@ def _parse_json(text):
 
 def _load_image(data):
     """Shrink the wallpaper so it uploads fast, and wrap it in the form the API wants."""
+    from google.genai import types
+
     img = Image.open(io.BytesIO(data)).convert("RGB")
     img.thumbnail((1024, 1024))
     buf = io.BytesIO()
@@ -156,6 +161,25 @@ def _contrast(first, second):
     return (brighter + 0.05) / (darker + 0.05)
 
 
+def _background_color(mode, palette):
+    """Choose a terminal background from the correct luminance range.
+
+    Palette extraction favors vivid colors, not UI suitability, so the model
+    should not be allowed to select an arbitrary palette entry as the main
+    backdrop. A target away from absolute black/white keeps the result usable
+    while still following the wallpaper's light/dark character.
+    """
+    if not palette:
+        raise ValueError("palette is empty")
+    ordered = sorted(palette, key=_luminance)
+    midpoint = max(1, len(ordered) // 2)
+    candidates = ordered[:midpoint] if mode == "dark" else ordered[midpoint:]
+    if not candidates:
+        candidates = ordered
+    target = 0.12 if mode == "dark" else 0.88
+    return min(candidates, key=lambda color: abs(_luminance(color) - target))
+
+
 def design_theme(data, mood, palette):
     """Ask Gemma to assign roles from the palette. Returns {role: {color, reason}}."""
     prompt = (THEME_PROMPT
@@ -180,6 +204,19 @@ def design_theme(data, mood, palette):
                 reason += " (Gemma gave no valid color, so a measured one was used)"
         result[role] = {"color": color, "reason": reason}
 
+    # Make the most consequential choice deterministic. The model receives
+    # palette colors for visual context, but luminance is a hard terminal
+    # usability constraint and should not depend on prompt adherence.
+    background = _background_color(mood.get("mode"), palette)
+    if result["background"]["color"] != background:
+        result["background"] = {
+            "color": background,
+            "reason": (
+                result["background"]["reason"]
+                + f" (selected as the {mood.get('mode')} background by luminance)"
+            ),
+        }
+
     # Ensure the selected foreground is as readable as this palette allows.
     background = result["background"]["color"]
     foreground = result["foreground"]["color"]
@@ -188,6 +225,19 @@ def design_theme(data, mood, palette):
         result["foreground"] = {
             "color": best,
             "reason": result["foreground"]["reason"] + " (changed for readability)",
+        }
+
+    # Avoid making the accent disappear into the background or foreground.
+    used = {result["background"]["color"], result["foreground"]["color"]}
+    accent_candidates = [color for color in palette if color not in used]
+    if accent_candidates and result["accent"]["color"] in used:
+        accent = max(
+            accent_candidates,
+            key=lambda color: _contrast(background, color),
+        )
+        result["accent"] = {
+            "color": accent,
+            "reason": result["accent"]["reason"] + " (changed to remain distinct)",
         }
 
     return result
@@ -501,28 +551,52 @@ def design_style(data, mood, theme):
 
 
 def main(argv=None):
-    """Analyze one wallpaper from the command line and print the complete rice."""
-    args = list(sys.argv[1:] if argv is None else argv)
-    if len(args) != 1:
-        print("Usage: python ml_model.py <wallpaper-path>", file=sys.stderr)
-        return 2
+    """Generate configs from a wallpaper or a previously saved design JSON."""
+    import argparse
+    from app_configs import APP_SPECS, detect_apps, generate_configs, write_configs
 
-    image_path = args[0]
+    parser = argparse.ArgumentParser(description="Generate Ricifier app configs")
+    parser.add_argument("wallpaper", nargs="?", help="wallpaper path")
+    parser.add_argument("--mood-json", type=Path,
+                        help="saved mood/design JSON; skips Gemini and the image")
+    parser.add_argument("--out", type=Path, default=None,
+                        help="output directory (default: output)")
+    parser.add_argument("--apps", nargs="+", choices=sorted(APP_SPECS),
+                        help="apps to generate (default: detected apps)")
+    parsed = parser.parse_args(list(sys.argv[1:] if argv is None else argv))
+    if bool(parsed.wallpaper) == bool(parsed.mood_json):
+        parser.error("provide exactly one of a wallpaper path or --mood-json")
+
+    output_dir = parsed.out or (Path(__file__).resolve().parent.parent / "output")
     try:
-        with open(image_path, "rb") as image_file:
-            data = image_file.read()
+        if parsed.mood_json:
+            saved = json.loads(parsed.mood_json.read_text(encoding="utf-8"))
+            mood = saved.get("mood", {})
+            theme = saved["theme"]
+            aesthetic = saved["aesthetic"]
+            palette = saved.get("palette", [])
+        else:
+            image_path = parsed.wallpaper
+            with open(image_path, "rb") as image_file:
+                data = image_file.read()
+            from processor import extract_palette
+            palette = extract_palette(image_path)
+            mood = analyze_wallpaper(data)
+            theme = design_theme(data, mood, palette)
+            aesthetic = generate_aesthetic(data, mood, theme, palette)
 
-        from processor import extract_palette
-
-        palette = extract_palette(image_path)
-        mood = analyze_wallpaper(data)
-        theme = design_theme(data, mood, palette)
-        aesthetic = generate_aesthetic(data, mood, theme, palette)
-        from app_configs import detect_apps, generate_configs, write_configs
-
-        apps = detect_apps()
-        configs = generate_configs(theme, aesthetic, apps=apps)
-        write_configs(configs)
+        if parsed.apps:
+            apps = {name: {"version": "unknown"} for name in parsed.apps}
+        else:
+            apps = detect_apps()
+        configs = generate_configs(theme, aesthetic, mood=mood, apps=apps)
+        write_configs(configs, output_dir=output_dir)
+        if not parsed.mood_json:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            (output_dir / "mood.json").write_text(json.dumps({
+                "palette": palette, "mood": mood, "theme": theme,
+                "aesthetic": aesthetic,
+            }, indent=2), encoding="utf-8")
         print(json.dumps({
             "palette": palette,
             "mood": mood,
@@ -531,7 +605,7 @@ def main(argv=None):
             "detected_apps": apps,
             "configs": configs,
         }, indent=2))
-    except (OSError, ValueError, RuntimeError) as error:
+    except (OSError, ValueError, RuntimeError, KeyError) as error:
         print(f"ml_model.py: {error}", file=sys.stderr)
         return 1
     return 0

@@ -1,0 +1,1217 @@
+{"imports":{"react":"https://github.githubassets.com/assets/react-e27d1b3e03961e68.js","react-dom":"https://github.githubassets.com/assets/react-dom-e5fd46a22d5c4058.js","react-dom/client":"https://github.githubassets.com/assets/react-dom-client-1b4a3ee065998cea.js","react-is":"https://github.githubassets.com/assets/react-is-e0b593954b4706d8.js","react-reconciler":"https://github.githubassets.com/assets/react-reconciler-8e99e505c4429605.js","react/compiler-runtime":"https://github.githubassets.com/assets/react-compiler-runtime-4610bd6d3de9c049.js","react/jsx-dev-runtime":"https://github.githubassets.com/assets/react-jsx-dev-runtime-ea55d68667d559e5.js","react/jsx-runtime":"https://github.githubassets.com/assets/react-jsx-runtime-4915cb0f5b3aff04.js","scheduler":"https://github.githubassets.com/assets/scheduler-58b860b049ca307c.js"}}
+:root {
+--tab-size-preference: 4;
+}
+pre, code {
+tab-size: var(--tab-size-preference);
+}
+{"locale":"en","featureFlags":["actions_caches_react_shell","actions_enable_background_steps","actions_new_hosted_runner_image_select_sizes_and_versions","actions_runners_react_shell","activity_diff_file_tree","activity_repos_file_tree","activity_repos_overview_header","activity_repos_overview_sidebar","agent_author_search_expansion","agent_author_search_expansion_ui_pulls","alternate_user_config_repo","async_conversion_coverage_enabled","billing_billable_licenses_cost_center_bucket_fix","billing_budget_expiration","billing_cost_center_list_assigned_resources","billing_discount_threshold_notification","code_quality_enablement_banner_targeting","code_quality_remove_preview","code_view_raf_sticky_lines","codespaces_prebuild_region_target_update","coding_agent_third_party_model_ui","copilot_agent_snippy","copilot_ahp_tool_call_timing","copilot_api_agentic_issue_marshal_yaml","copilot_automation_repo_mcp_servers","copilot_automations_pagination","copilot_base_model_policy_row","copilot_chat_auto_mode_v2","copilot_chat_clear_model_selection_for_default_change","copilot_chat_early_task_provisioning","copilot_chat_persist_session_drafts","copilot_chat_vision_dotcom_chat_ga_gate","copilot_css_textarea_autosize","copilot_custom_copilots","copilot_custom_copilots_feature_preview","copilot_duplicate_thread","copilot_extensions_removal_on_marketplace","copilot_fix_failed_workflows_all_skus","copilot_hide_hovercard","copilot_immersive_task_hyperlinking","copilot_mc_cli_resume_any_users_task","copilot_mission_control_agent_merge_fix_ci","copilot_mission_control_agent_merge_resolve_conflicts","copilot_mission_control_awps_batching","copilot_mission_control_early_stop","copilot_mission_control_managed_sandbox_environments","copilot_mission_control_needs_attention","copilot_mission_control_reasoning_effort","copilot_mission_control_sandbox_remote_bypass","copilot_mission_control_task_alive_updates","copilot_mission_control_task_sharing","copilot_org_policy_page_focus_mode","copilot_share_active_subthread","copilot_spaces_ga","copilot_spaces_individual_policies_ga","copilot_swe_agent_authorization_status_ui","copilot_swe_agent_automation_resource_scoped_writes","copilot_swe_agent_discussion_comment_trigger","copilot_swe_agent_discussion_opened_trigger","copilot_swe_agent_discussion_updated_trigger","copilot_swe_agent_hide_model_picker_if_only_auto","copilot_swe_agent_issue_assigned_trigger","copilot_swe_agent_issue_comment_trigger","copilot_swe_agent_issue_labeled_trigger","copilot_swe_agent_pr_comment_model_picker","copilot_swe_agent_pull_request_assigned_trigger","copilot_swe_agent_pull_request_comment_trigger","copilot_swe_agent_pull_request_labeled_trigger","copilot_swe_agent_pull_request_merged_trigger","copilot_swe_agent_pull_request_opened_trigger","copilot_swe_agent_pull_request_ready_for_review_trigger","copilot_swe_agent_pull_request_review_requested_trigger","copilot_swe_agent_pull_request_review_submitted_trigger","copilot_swe_agent_pull_request_synchronize_trigger","copilot_swe_agent_sub_issue_added_trigger","copilot_swe_agent_use_subagents","copilot_task_api_github_rest_style","copilot_task_scoped_alive_channel","copilot_token_based_billing","copilot_unconfigured_is_inherited","copilot_user_can_upgrade_plan_field","copilot_web_integration_cutover","copilot_workbench_sunset_redirect","dashboard_agents_module_auth_token_check","dashboard_indexeddb_caching","fgpat_permissions_selector_redesign","glc_code_quality_repo_settings_workflow_config","hyperspace_2025_logged_out_batch_1","hyperspace_2025_logged_out_batch_2","hyperspace_2025_logged_out_batch_3","in_product_messaging_datadog_monitoring","ipm_ubb_individual_budget_banner","issue_fields_multi_select","issue_inline_avatars","issue_pinned_views","issue_pinned_views_team_vs_personal","issue_relative_time_micro","issue_viewer_paved_path","issues_expanded_file_types","issues_hide_closed_sub_issues","issues_lazy_load_comment_box_suggestions","issues_react_chrome_container_query_fix","labels_archiving","labels_archiving_info","landing_pages_ninetailed","lifecycle_label_name_updates","marketing_cookie_consent_banner","marketing_pages_search_explore_provider","memex_default_issue_create_repository","memex_live_update_hovercard","memex_mwl_filter_field_delimiter","memex_remove_deprecated_type_issue","merge_queue_restricted_pushers_warning","merge_status_header_feedback","milestone_closed_issues_prioritization","octocaptcha_origin_optimization","primer_react_css_anchor_positioning","primer_react_merged_forwarded_refs","primer_react_timeline_list_semantics","prs_copilot_app_open_action","prs_css_anchor_positioning","pull_request_copilot_attribution_header","pull_request_overview_merge_control","pull_request_overview_panel_edit_description","pull_request_persister","pull_request_stacks_navigation_shortcuts","pull_request_virtualization_image_estimate","pull_request_virtualization_loader_batching","pull_request_virtualization_scroll_compensation","pull_request_virtualization_scroll_intent","quick_search_lazy_suggestions","react_blob_isolate_code_lines","react_blob_ssr_content_visibility","react_data_router_tanstack_allowed","react_logged_out_repository_header","react_query_props_with_key","react_sandbox_future_tanstack","repo_app_turbo","repo_issues_sidebar_layout","repo_pulls_dashboard_declutter","repo_pulls_dashboard_ga","repo_pulls_dashboard_persistence","repos_contributors_limited_default_range","review_involves_filter","rule_ignored_file_paths","rulesets_actor_list_editor","sample_network_conn_type","security_center_artifact_filters_popover","see_who_reacted","semantic_similarity_duplicate_issue_detection","session_logs_ungroup_reasoning_text","set_sha256_on_repo_creation_form","site_banner_desktop_copilot_app","site_ghca_pixel_mona","site_github_app_ga_page","site_github_app_ga_page_highlight","site_github_app_mobile_native_share","site_global_banner_dev_days_attendee","site_global_nav_spark_models_removed","speculation_rules_ui_service","suggest_custom_property_values_copilot","suppress_automated_browser_vitals","swp_forms_disable_octocaptcha","thread_resolution_reason","update_issue_suggestions","viewscreen_sandbox","warn_inaccessible_attachments","webp_support","workstream_plugin_bootstrap"],"githubDomain":"https://github.com","copilotApiOverrideUrl":"https://api.githubcopilot.com","cmcApiUrl":"https://api.github.com/cmc_internal/api"}
+Configuration · polybar/polybar Wiki · GitHub
+Skip to content
+{"props":{"docsUrl":"https://docs.github.com/get-started/accessibility/keyboard-shortcuts"}}
+{"props":{}}
+{"props":{"color_mode":"dark","logged_in":false,"marketing_page":false,"home_path":"/","login_path":"/login?return_to=https%3A%2F%2Fgithub.com%2Fpolybar%2Fpolybar%2Fwiki%2FConfiguration","signup_path":"/signup?ref_cta=Sign+up\u0026ref_loc=header+logged+out\u0026ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Fwiki%2Fshow\u0026source=header-repo\u0026source_repo=polybar%2Fpolybar","signup_enabled":true,"is_signup_controller":false,"show_search_and_nav":true,"hide_search":false,"private_mode_enabled":false,"should_use_dotcom_links":true,"auth_hydro_click":"{\"event_type\":\"authentication.click\",\"payload\":{\"location_in_page\":\"site header menu\",\"repository_id\":null,\"auth_type\":\"SIGN_UP\",\"originating_url\":\"https://github.com/polybar/polybar/wiki/Configuration\",\"user_id\":null}}","auth_hydro_click_hmac":"6c95665e833c43f03d80f997f6375aad0542c0d0b3c8c0cf4a4857a96b6b01fe","overlay":false,"fixed":false}}
+Navigation Menu
+Sign in
+Appearance settings
+Platform
+AI CODE CREATION
+GitHub Copilot
+Write better code with AI
+GitHub Copilot app
+Direct agents from issue to merge
+MCP Registry
+Integrate external tools
+DEVELOPER WORKFLOWS
+Actions
+Automate any workflow
+Codespaces
+Instant dev environments
+Issues
+Plan and track work
+Code Review
+Manage code changes
+Code Quality
+Enforce quality at merge
+APPLICATION SECURITY
+GitHub Advanced Security
+Find and fix vulnerabilities
+Code security
+Secure your code as you build
+Secret protection
+Stop leaks before they start
+EXPLORE
+Why GitHub
+Documentation
+Blog
+Changelog
+Marketplace
+View all features
+Solutions
+BY COMPANY SIZE
+Enterprises
+Small and medium teams
+Startups
+Nonprofits
+BY USE CASE
+App Modernization
+DevSecOps
+DevOps
+CI/CD
+View all use cases
+BY INDUSTRY
+Healthcare
+Financial services
+Manufacturing
+Government
+View all industries
+View all solutions
+Resources
+EXPLORE BY TOPIC
+AI
+Software Development
+DevOps
+Security
+View all topics
+EXPLORE BY TYPE
+Customer stories
+Events & webinars
+Ebooks & reports
+Business insights
+GitHub Skills
+SUPPORT & SERVICES
+Documentation
+Customer support
+Community forum
+Trust center
+Partners
+View all resources
+Open Source
+COMMUNITY
+GitHub Sponsors
+Fund open source developers
+PROGRAMS
+Security Lab
+Maintainer Community
+GitHub Stars
+Archive Program
+REPOSITORIES
+Topics
+Trending
+Collections
+Enterprise
+ENTERPRISE SOLUTIONS
+Enterprise platform
+AI-powered developer platform
+AVAILABLE ADD-ONS
+GitHub Advanced Security
+Enterprise-grade security features
+Copilot for Business
+Enterprise-grade AI features
+Premium Support
+Enterprise-grade 24/7 support
+Pricing
+Search
+/
+Sign in
+Sign up
+Appearance settings
+You signed in with another tab or window.
+Reload
+to refresh your session.
+You signed out in another tab or window.
+Reload
+to refresh your session.
+You switched accounts on another tab or window.
+Reload
+to refresh your session.
+Dismiss alert
+{{ message }}
+{"props":{"contextRegion":{"crumbs":[{"crumb_type":"organization","label":"polybar","is_root":false,"href":"/polybar"},{"crumb_type":"repository","label":"polybar","is_root":false,"href":"/polybar/polybar"}],"localNavigation":[{"id":"code","icon":"code","label":"Code","href":"/polybar/polybar","selectedLinks":["repo_source","repo_downloads","repo_commits","repo_releases","repo_tags","repo_branches","repo_packages","repo_deployments","repo_attestations"],"popoverTarget":false,"commandId":"repositories:go-to-code","reactNav":{"appTarget":"code-view","anchor":"code-view-repo-link"},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"issues","icon":"issue-opened","label":"Issues","href":"/polybar/polybar/issues","selectedLinks":["repo_issues","repo_labels","repo_milestones"],"count":161,"popoverTarget":false,"commandId":"repositories:go-to-issues","reactNav":{"appTarget":"repo","anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"pull-requests","icon":"git-pull-request","label":"Pull requests","href":"/polybar/polybar/pulls","selectedLinks":["repo_pulls","checks"],"count":75,"popoverTarget":false,"commandId":"repositories:go-to-pull-requests","reactNav":{"appTarget":null,"anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"discussions","icon":"comment-discussion","label":"Discussions","href":"/polybar/polybar/discussions","selectedLinks":["repo_discussions"],"popoverTarget":false,"commandId":"repositories:go-to-discussions","reactNav":{"appTarget":null,"anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"actions","icon":"play","label":"Actions","href":"/polybar/polybar/actions","selectedLinks":["repo_actions"],"popoverTarget":false,"commandId":"repositories:go-to-actions","reactNav":{"appTarget":"actions-workflows","anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"projects","icon":"table","label":"Projects","href":"/polybar/polybar/projects","selectedLinks":["repo_projects","new_repo_project","repo_project"],"popoverTarget":false,"commandId":"repositories:go-to-projects","reactNav":{"appTarget":"repo","anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"wiki","icon":"book","label":"Wiki","href":"/polybar/polybar/wiki","selectedLinks":["repo_wiki"],"popoverTarget":false,"commandId":"repositories:go-to-wiki","reactNav":{"appTarget":null,"anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"security-and-quality","icon":"shield","label":"Security and quality","href":"/polybar/polybar/security","selectedLinks":["security","overview","alerts","policy","token_scanning","code_scanning"],"count":0,"popoverTarget":false,"commandId":"repositories:go-to-security","reactNav":{"appTarget":null,"anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}},{"id":"insights","icon":"graph","label":"Insights","href":"/polybar/polybar/pulse","selectedLinks":["repo_graphs","repo_contributors","dependency_graph","dependabot_updates","pulse","people","community"],"popoverTarget":false,"commandId":"repositories:go-to-insights","reactNav":{"appTarget":null,"anchor":null},"turboNav":{"frame":"repo-content-turbo-frame"}}],"localNavigationUpdateChannel":null,"selectedLink":"repo_wiki"},"owner":null,"headerLogo":{"href":"/","aria-label":"Homepage "},"notifications":{"indicatorMode":"disabled","websocketChannel":null,"fetchIndicatorSrc":"/notifications/indicator","fetchIndicatorEnabled":false},"issues":{"href":"/issues"},"pulls":{"href":"/pulls"},"contributedRepos":{"href":"/repos"},"copilot":{"show":false,"showAgentsButton":false,"showRelaunchAnnouncement":false,"copilotChatUrl":null,"copilotApiUrl":"https://api.githubcopilot.com"},"search":{"show":true,"showCommandPalette":false,"isSearchPage":false,"isJumpToSearch":false,"searchContext":{"scope":"repo:polybar/polybar","current_repo_name":"polybar","current_repo_nwo":"polybar/polybar","current_repo_org":"polybar","user_id":"polybar"}},"commandPalette":null,"enterpriseBar":{"show":false},"globalTransactionalMessage":[],"payloadsUrl":"/_global-navigation/payloads.json?can_toggle_site_admin_and_employee_status=0\u0026is_admin_mode_on=0\u0026is_ui_opted_out=0\u0026show_ui_opt_out=0\u0026v=6","contextRegionUrl":"/_global-navigation/context-region.json"}}
+polybar
+polybar
+Repository navigation
+Code
+Issues
+161
+(
+161
+)
+Pull requests
+75
+(
+75
+)
+Discussions
+Actions
+Projects
+Wiki
+Security and quality
+Insights
+More
+items
+Configuration
+Jump to bottom
+patrick96 edited this page
+Nov 5, 2023
+·
+110 revisions
+The parameters on
+this page
+are using the default values unless stated otherwise.
+If the key is undefined (commented out) or its value is empty, it means there is no default value for the given parameter.
+Configuration Syntax
+The configuration uses the
+INI file
+format
+, the full specification can be
+found
+here
+.
+[section/name]
+str
+= My string
+bool
+= true
+bool
+= on
+int
+= 10
+float
+= 10.0
+;
+Quote string values if you want to keep surrounding spaces
+str
+=
+"
+My string
+"
+;
+Lists are defined using a 0-based index
+mylist-0
+= value
+mylist-1
+= value
+mylist-2
+= value
+;
+Lists cannot have gaps. To define mylist-4
+;
+you will also have to define mylist-3
+Referencing values
+;
+You can reference a value in another section using:
+key
+= ${section.key}
+;
+Values in the same section can be referenced using:
+key
+= ${self.key}
+;
+Values for a defined bar can be referenced using:
+key
+= ${bar/top.foreground}
+;
+Values for the current bar can be referenced using:
+key
+= ${root.foreground}
+;
+Environment variables can be referenced using:
+key
+= ${env:VAR:fallback value}
+;
+Values in the X resources db can be referenced using:
+;
+NOTE: Requires `+xrm` (compiled with `xcb-util-xrm` dependency)
+;
+Example:
+;
+Polybar config:
+;
+background = ${xrdb:color2:#00ff00}
+;
+.Xresources:
+;
+*color2: #8C9440
+key
+= ${xrdb:KEY:fallback value}
+;
+File contents can be referenced using:
+key
+= ${file:/absolute/file/path:fallback value}
+Note:
+References can only be used on their own. That means something like
+key = text ${section.key} text
+will not work (the reference will not be resolved).
+Inheritance
+Values can be inherited from another section by defining the parameter
+inherit = section/base
+.
+All undefined keys will be cloned.
+[section/base]
+foo
+= 1
+bar
+= 0.15
+baz
+= true
+[section/child]
+inherit
+= section/base
+baz
+= false
+;
+Result
+[section/child]
+foo
+= 1
+bar
+= 0.15
+baz
+= false
+Multiple sections can be inherited by adding multiple space separated section
+names to the inherit key:
+inherit = section1 section2
+.
+File inclusion
+It is possible to include a file or all files in a directory with pre-defined
+key-value pairs using:
+include-file
+= /absolute/path/to/file
+include-directory
+= /absolute/path/to/directory
+;
+Relative paths are new in version 3.6.0
+include-file
+= relative/path/to/file
+include-directory
+= relative/path/to/directory
+This is equivalent to replacing the
+include-file
+directive with the contents
+of the file.
+The
+include-directory
+directive will include all files in the given directory
+(non-recursively) the same way as multiple
+include-file
+directives. Files are
+included in alphabetical order.
+Note:
+The files included that way can also contain further
+include-file
+and
+include-directory
+keys. Make sure that you do not create a cycle where a
+file includes itself directly or indirectly.
+Multiple include directives can be defined inside a section because they are not
+proper config keys.
+When specifying a relative path, the path is taken relative to the file where
+the include directive is defined.
+Custom variables
+;
+You can create your own local variables, for example:
+[colors]
+black
+=
+#
+000
+white
+=
+#
+fff
+blue
+=
+#
+00f
+green
+=
+#
+0f0
+[modules/tmp]
+format-background
+= ${colors.black}
+format-foreground
+= ${colors.white}
+Using the same module for multiple bars
+If you are using the same module for more than one bar, there's a neat way to make bar specific changes to the module configuration. Define some custom parameters, for both bars, and then reference them from the module. For example:
+[bar/top]
+myscript-background
+=
+#
+f00
+myscript-command
+= whoami
+[bar/bottom]
+myscript-background
+=
+#
+f00
+myscript-command
+= date +%s
+[module/myscript]
+format-background
+= ${root.myscript-background}
+exec
+= ${root.myscript-command}
+Bar settings
+Each bar you want to display needs a so called "bar section".
+The bar section is defined as a config section that begins with
+bar/
+and is
+followed by the name of the bar.
+Configuring the tray through the bar section is deprecated in favor of the new
+tray module
+.
+Note
+For configuring multiple monitors automatically see
+https://github.com/polybar/polybar/issues/763
+;
+Defines a bar called 'mybar'
+[bar/mybar]
+;
+Use either of the following command to list available outputs:
+;
+$ polybar -M | cut -d ':' -f 1
+;
+$ xrandr -q | grep " connected" | cut -d ' ' -f1
+;
+If no monitor is given, the primary monitor is used if it exists
+monitor
+=
+;
+Use the specified monitor as a fallback if the main one is not found.
+monitor-fallback
+=
+;
+Require the monitor to be in connected state
+monitor-strict
+= false
+;
+Use fuzzy matching for monitors (only ignores dashes -)
+;
+Useful when monitors are named differently with different drivers.
+monitor-exact
+= true
+;
+Tell the Window Manager not to configure the window.
+;
+Use this to detach the bar if your WM is locking its size/position.
+;
+Note: With this most WMs will no longer reserve space for
+;
+the bar and it will overlap other windows. You need to configure
+;
+your WM to add a gap where the bar will be placed.
+override-redirect
+= false
+;
+Put the bar at the bottom of the screen
+bottom
+= false
+;
+Prefer fixed center position for the `modules-center` block.
+;
+The center block will stay in the middle of the bar whenever
+;
+possible. It can still be pushed around if other blocks need
+;
+more space.
+;
+When false, the center block is centered in the space between
+;
+the left and right block.
+fixed-center
+= true
+;
+Width and height of the bar window.
+;
+Supports any percentage with offset or an extent value.
+;
+For 'width', the percentage is relative to the monitor width and for 'height'
+;
+relative to the monitor height
+width
+=
+height
+=
+;
+Offset the bar window in the x and/or y direction.
+;
+Supports any percentage with offset relative to the monitor width (offset-x)
+;
+or height (offset-y)
+offset-x
+= 0
+offset-y
+= 0
+;
+Background ARGB color (e.g. #f00, #ff992a, #ddff1023)
+background
+=
+#
+fff
+;
+Foreground ARGB color (e.g. #f00, #ff992a, #ddff1023)
+foreground
+=
+#
+000
+;
+Background gradient (vertical steps)
+;
+background-[0-9]+ = #aarrggbb
+background-0
+=
+;
+Value used for drawing rounded corners
+;
+For this to work you may also need to enable pseudo-transparency or use a
+;
+compositor like picom.
+;
+Individual values can be defined using:
+;
+radius-{top,bottom}
+;
+or
+;
+radius-{top,bottom}-{left,right} (New in version 3.6.0)
+;
+Polybar always uses the most specific radius definition for each corner.
+radius
+= 0.0
+;
+Under-/overline pixel size and argb color
+;
+Individual values can be defined using:
+;
+{overline,underline}-size
+;
+{overline,underline}-color
+line-size
+= 0
+line-color
+=
+#
+f00
+;
+Values applied to all borders
+;
+Individual side values can be defined using:
+;
+border-{left,top,right,bottom}-size
+;
+border-{left,top,right,bottom}-color
+;
+The top and bottom borders are added to the bar height, so the effective
+;
+window height is:
+;
+height + border-top-size + border-bottom-size
+;
+Meanwhile the effective window width is defined entirely by the width key and
+;
+the border is placed within this area. So you effectively only have the
+;
+following horizontal space on the bar:
+;
+width - border-right-size - border-left-size
+;
+border-size supports any percentage with offset.
+;
+For border-{left,right}-size, the percentage is relative to the monitor width
+;
+and for border-{top,bottom}-size, it is relative to the monitor height.
+border-size
+=
+border-color
+=
+;
+Padding (number of spaces, pixels, or points) to add at the beginning/end of
+;
+the bar
+;
+Individual side values can be defined using:
+;
+padding-{left,right}
+padding
+= 0
+;
+Margin (number of spaces, pixels, or points) to add before/after each module
+;
+Individual side values can be defined using:
+;
+module-margin-{left,right}
+module-margin
+= 0
+;
+Fonts are defined using <font-name>;<vertical-offset>
+;
+Font names are specified using a fontconfig pattern.
+;
+font-0 = NotoSans-Regular:size=8;2
+;
+font-1 = MaterialIcons:size=10
+;
+font-2 = Termsynu:size=8;-1
+;
+font-3 = FontAwesome:size=10
+;
+See the Fonts wiki page for more details
+font-0
+=
+;
+Modules are added to one of the available blocks
+;
+modules-left = cpu ram
+;
+modules-center = xwindow xbacklight
+;
+modules-right = ipc clock
+modules-left
+=
+modules-center
+=
+modules-right
+=
+;
+The separator will be inserted between the output of each module
+;
+This has the same properties as a label
+separator
+=
+;
+This value is used to add extra spacing between elements
+;
+@deprecated: This parameter will be removed in an upcoming version
+spacing
+= 0
+;
+Opacity value between 0.0 and 1.0 used on fade in/out
+dim-value
+= 1.0
+;
+Value to be used to set the WM_NAME atom
+;
+If the value is empty or undefined, the atom value
+;
+will be created from the following template: polybar-[BAR]_[MONITOR]
+;
+NOTE: The placeholders are not available for custom values
+wm-name
+=
+;
+Locale used to localize various module data (e.g. date)
+;
+Expects a valid libc locale, for example: sv_SE.UTF-8
+locale
+=
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Position of the system tray window
+;
+If empty or undefined, tray support will be disabled
+;
+NOTE: A center aligned tray will cover center aligned modules
+;
+;
+Available positions:
+;
+left
+;
+center
+;
+right
+;
+none
+tray-position
+=
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+If true, the bar will not shift its
+;
+contents when the tray changes
+tray-detached
+= false
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Tray icon max size
+tray-maxsize
+= 16
+;
+@deprecated Since 3.3.0 the tray always uses pseudo-transparency
+;
+Enable pseudo transparency
+;
+Will automatically be enabled if a fully transparent
+;
+background color is defined using `tray-background`
+tray-transparent
+= false
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Background color for the tray container
+;
+ARGB color (e.g. #f00, #ff992a, #ddff1023)
+;
+By default the tray container will use the bar
+;
+background color.
+tray-background
+= ${root.background}
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Foreground color for the tray icons
+;
+This only gives a hint to the tray icon for its color, it will probably only
+;
+work for GTK3 icons (if at all) because it targets a non-standard part of the
+;
+system tray protocol by setting the _NET_SYSTEM_TRAY_COLORS atom on the tray
+;
+window.
+;
+New in version 3.6.0
+tray-foreground
+= ${root.foreground}
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Offset the tray in the x and/or y direction
+;
+Supports any percentage with offset
+;
+Percentages are relative to the monitor width or height for detached trays
+;
+and relative to the bar window (without borders) for non-detached tray.
+tray-offset-x
+= 0
+tray-offset-y
+= 0
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Pad the sides of each tray icon
+tray-padding
+= 0
+;
+@deprecated in favor of new tray module since version 3.7.0
+;
+Scale factor for tray clients
+tray-scale
+= 1.0
+;
+Restack the bar window and put it above the
+;
+selected window manager's root
+;
+;
+Fixes the issue where the bar is being drawn
+;
+on top of fullscreen window's
+;
+;
+Currently supported values:
+;
+generic (Tries the ewmh strategy and falls back
+;
+to the bottom strategy.
+;
+This is a best-effort strategy and may change and be tweaked in
+;
+the future, the individual strategies are available on their own)
+;
+(New in version 3.6.0)
+;
+(Changed in version 3.7.0: Tries the ewmh strategy instead of just
+;
+the bottom strategy)
+;
+bspwm (Moves the bar window above all bspwm root windows)
+;
+bottom (Moves the bar window above the first window in the window stack.
+;
+Works in xmonad, may not work on other WMs
+;
+New in version 3.7.0)
+;
+ewmh (Moves the bar above the window specified in _NET_SUPPORTING_WM_CHECK,
+;
+if it is set
+;
+New in version 3.7.0)
+;
+i3 (requires `override-redirect = true`)
+;
+wm-restack =
+;
+Whether polybar defines struts (_NET_WM_STRUT_PARTIAL and _NET_WM_STRUT)
+;
+New in version 3.7.0
+enable-struts
+= true
+;
+Set a DPI values used when rendering text
+;
+This only affects scalable fonts
+;
+Set this to 0 to let polybar calculate the dpi from the screen size.
+;
+dpi =
+dpi-x
+= 96
+dpi-y
+= 96
+;
+Enable support for inter-process messaging
+;
+See the Messaging wiki page for more details.
+enable-ipc
+= false
+;
+Fallback click handlers that will be called if
+;
+there's no matching module handler found.
+click-left
+=
+click-middle
+=
+click-right
+=
+scroll-up
+=
+scroll-down
+=
+double-click-left
+=
+double-click-middle
+=
+double-click-right
+=
+;
+If two clicks are received within this interval (ms), they are recognized as
+;
+a double click.
+;
+New in version 3.6.0
+double-click-interval
+= 400
+;
+Requires polybar to be built with xcursor support (xcb-util-cursor)
+;
+Possible values are:
+;
+- default : The default pointer as before, can also be an empty string (default)
+;
+- pointer : Typically in the form of a hand
+;
+- ns-resize : Up and down arrows, can be used to indicate scrolling
+cursor-click
+=
+cursor-scroll
+=
+Global WM settings
+Tells the window manager to add extra space below (with
+margin-bottom
+for top
+bars) or above (with
+margin-top
+for bottom bars) the bar window.
+Whether these settings do anything, heavily depends on your window manager.
+[global/wm]
+;
+Adjust the _NET_WM_STRUT_PARTIAL top value
+;
+Used for top aligned bars
+;
+Supports any percentage with offset relative to the monitor height
+margin-bottom
+= 0
+;
+Adjust the _NET_WM_STRUT_PARTIAL bottom value
+;
+Used for bottom aligned bars
+;
+Supports any percentage with offset relative to the monitor height
+margin-top
+= 0
+Application settings
+[settings]
+;
+@deprecated These settings are ignored since 3.6.0
+throttle-output
+= 5
+throttle-output-for
+= 10
+;
+@deprecated The setting is ignored since 3.5.0
+throttle-input-for
+= 30
+;
+Reload when the screen configuration changes (XCB_RANDR_SCREEN_CHANGE_NOTIFY event)
+screenchange-reload
+= false
+;
+Compositing operators
+;
+@see: https://www.cairographics.org/manual/cairo-cairo-t.html#cairo-operator-t
+compositing-background
+= source
+compositing-foreground
+= over
+compositing-overline
+= over
+compositing-underline
+= over
+compositing-border
+= over
+;
+Define fallback values used by all module formats
+format-foreground
+=
+format-background
+=
+format-underline
+=
+format-overline
+=
+format-spacing
+=
+format-padding
+=
+format-margin
+=
+format-offset
+=
+;
+Enables pseudo-transparency for the bar
+;
+If set to true the bar can be transparent without a compositor.
+pseudo-transparency
+= false
+Module Settings
+A module is defined as a config section that begins with
+module/
+and is
+followed by the name of the module (this can be different from the module type).
+For a module to show up on your bar, you need to place it by adding its name to the
+modules-left
+,
+modules-center
+, or
+modules-right
+settings in the bar section.
+;
+Defines a module named 'mymodule'
+[module/mymodule]
+;
+The type of this module
+;
+The wiki pages for the individual modules show the correct values for each module.
+type
+= ...
+;
+Hide the module by default
+;
+Default: false
+;
+New in version 3.6.0
+hidden
+= true
+Wiki pages
+Pages
+35
+Loading
+Home
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Compiling
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Configuration
+Configuration Syntax
+Referencing values
+Inheritance
+File inclusion
+Custom variables
+Using the same module for multiple bars
+Bar settings
+Global WM settings
+Application settings
+Module Settings
+Loading
+Debugging your Config
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Distro Specific Setup
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Fonts
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Formatting
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Inter process messaging
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Known Issues
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: alsa
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: backlight
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: battery
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: bspwm
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: cpu
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: date
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: filesystem
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: github
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: i3
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: ipc
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: memory
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: menu
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: mpd
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: network
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: pulseaudio
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: script
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: temperature
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: text
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: xbacklight
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: xkeyboard
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: xwindow
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Module: xworkspaces
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Release Guidelines
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Style Guide
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+Testing
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Loading
+User contributed modules
+Uh oh!
+There was an error while loading.
+Please reload this page
+.
+Show 20 more pages…
+🏠
+Home
+ℹ️
+Help
+⚙️
+Configuration
+🎨
+Formatting
+🗛
+Fonts
+💥
+Actions
+🏗️
+Compiling
+🔧
+Debugging your Config
+💬
+Inter process messaging
+🤫
+Known Issues
+📦
+Packaging Polybar
+For Developers
+:
+📚
+Release Guidelines
+🎨
+Style Guide
+🧪
+Testing
+🐧
+Distro Specific Setup
+Modules:
+alsa
+backlight
+battery
+bspwm
+cpu
+date
+filesystem
+github
+i3
+ipc
+memory
+menu
+mpd
+network
+pulseaudio
+script
+temperature
+text
+tray
+xbacklight
+xkeyboard
+xwindow
+xworkspaces
+User contributed modules
+Clone this wiki locally
+Footer
+© 2026 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Community
+Docs
+Contact
+Manage cookies
+Do not share my personal information
+You can’t perform that action at this time.
