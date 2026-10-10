@@ -5,20 +5,20 @@ configuration {
 }
 
 * {
-  bg: #862e2e;
-  fg: #8ec2ec;
-  selected: #f57272;
-  accent: #64abe6;
-  seltext: #ffffff;
-  selected-active: #64abe6;
-  urgent: #f57272;
-  placeholder: #562526;
-  children: #8ec2ec;
+  bg: #635517;
+  fg: #efe3d7;
+  selected: #d3b7bc;
+  accent: #b39f31;
+  seltext: #000000;
+  selected-active: #b39f31;
+  urgent: #d3b7bc;
+  placeholder: #897221;
+  children: #efe3d7;
 }
 
 window {
   background-color: @bg;
-  border: 2px;
+  border: 1px;
   border-color: @accent;
   border-radius: 4px;
   padding: 12px;

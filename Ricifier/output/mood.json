@@ -1,0 +1,77 @@
+{
+  "mood": {
+    "mode": "dark",
+    "warmth": 4,
+    "contrast": 3,
+    "style": "soft golden glow",
+    "style_notes": "Soft lighting and a warm color palette create a gentle contrast between deep shadows and golden highlights.",
+    "summary": "The dark shadows and warm, golden lighting suggest a dark terminal theme with warm accent colors."
+  },
+  "theme": {
+    "background": {
+      "color": "#635517",
+      "reason": "This is the darkest color available, perfectly capturing the deep shadows of the scene. (selected as the dark background by luminance)"
+    },
+    "foreground": {
+      "color": "#efe3d7",
+      "reason": "This very light color provides the necessary high contrast against the dark background for readability."
+    },
+    "accent": {
+      "color": "#b39f31",
+      "reason": "This golden tone reflects the warm, soft lighting highlights seen in the image."
+    }
+  },
+  "aesthetic": {
+    "visual_style": {
+      "label": "soft",
+      "reason": "The warm, cinematic lighting and gentle color transitions suggest a soft, non-aggressive aesthetic."
+    },
+    "typography": {
+      "family": "monospace",
+      "suggested_family": "JetBrains Mono",
+      "size": 11,
+      "weight": "regular",
+      "line_height": 1.4,
+      "fallbacks": [
+        "monospace"
+      ],
+      "installed": false,
+      "fallback_family": "monospace",
+      "install_hint": "Install 'JetBrains Mono' or use 'monospace'.",
+      "reason": "A highly legible monospace font maintains a clean, modern look that doesn't distract from the ambient mood."
+    },
+    "geometry": {
+      "panel_style": "floating",
+      "corner_radius": 12,
+      "border_width": 2,
+      "gaps_inner": 8,
+      "gaps_outer": 12,
+      "padding": 12,
+      "reason": "Floating elements and rounded corners emulate the soft, organic feel of the character's hair and the scene's lighting."
+    },
+    "effects": {
+      "opacity": 0.85,
+      "shadows": true,
+      "blur": true,
+      "blur_radius": 16,
+      "reason": "Heavy blur and subtle transparency capture the 'soft golden glow' and depth of the original image."
+    },
+    "visual_hierarchy": {
+      "active_border": "#b39f31",
+      "inactive_border": "#897221",
+      "highlight": "#d3b7bc",
+      "reason": "Gold tones define interactive elements, while soft pink highlights provide a subtle nod to the character's palette."
+    },
+    "design_rationale": "The theme uses deep golden backgrounds and cream foregrounds to replicate the warm, low-light atmosphere of the wallpaper. Rounded corners, floating panels, and heavy Gaussian blurs are employed to mirror the soft, romantic mood of the scene."
+  },
+  "palette": [
+    "#b39f31",
+    "#897221",
+    "#965c8a",
+    "#635517",
+    "#b28486",
+    "#17120b",
+    "#d3b7bc",
+    "#efe3d7"
+  ]
+}
