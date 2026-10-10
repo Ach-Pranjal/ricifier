@@ -156,6 +156,14 @@ def _contrast(first, second):
     return (brighter + 0.05) / (darker + 0.05)
 
 
+def _safe_foreground(background, palette):
+    """Choose a readable palette color, falling back to a neutral if needed."""
+    best = max(palette, key=lambda color: _contrast(background, color))
+    if _contrast(background, best) >= 4.5:
+        return best
+    return "#f2f2f2" if _luminance(background) < 0.5 else "#111111"
+
+
 def design_theme(data, mood, palette):
     """Ask Gemma to assign roles from the palette. Returns {role: {color, reason}}."""
     prompt = (THEME_PROMPT
@@ -180,13 +188,19 @@ def design_theme(data, mood, palette):
                 reason += " (Gemma gave no valid color, so a measured one was used)"
         result[role] = {"color": color, "reason": reason}
 
-    # Ensure the selected foreground is as readable as this palette allows.
-    background = result["background"]["color"]
-    foreground = result["foreground"]["color"]
-    best = max(palette, key=lambda p: _contrast(background, p))
-    if _contrast(background, foreground) < min(4.5, _contrast(background, best)):
+    # Enforce the mood's light/dark direction instead of trusting the model alone.
+    ordered = sorted(palette, key=_luminance)
+    background = ordered[0] if mood.get("mode") == "dark" else ordered[-1]
+    if result["background"]["color"] != background:
+        result["background"] = {
+            "color": background,
+            "reason": result["background"]["reason"] + " (adjusted for mood luminance)",
+        }
+
+    foreground = _safe_foreground(background, palette)
+    if result["foreground"]["color"] != foreground:
         result["foreground"] = {
-            "color": best,
+            "color": foreground,
             "reason": result["foreground"]["reason"] + " (changed for readability)",
         }
 

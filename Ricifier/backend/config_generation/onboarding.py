@@ -45,7 +45,7 @@ from .schemas import (
     VersionSpec,
 )
 
-EXTRACTOR_VERSION = "1"
+EXTRACTOR_VERSION = "2"
 MAX_DOCUMENT_BYTES = 2_000_000
 SETTING_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]{0,63}$")
 DENIED_TOKENS = {
@@ -280,19 +280,23 @@ def extract_parameters(
     marker_by_name = {
         lines[index - 1]: index for index in setting_markers
     }
-    for line_number, line in enumerate(lines, 1):
-        match = re.match(
-            r"^\s*([A-Za-z][A-Za-z0-9_.-]{0,63})\s+"
-            r"(#[0-9a-fA-F]{6}|[-+]?\d+(?:\.\d+)?|true|false|yes|no|on|off)"
-            r"\s*(?:#.*)?$",
-            line,
-            re.I,
-        )
-        if match and match.group(1) not in marker_by_name:
-            _add_record(
-                records, seen, app_id, match.group(1), match.group(2),
-                source_id, line_number,
+    # Sphinx pages contain many prose examples that look like `name value`
+    # lines. When real setting markers are present, trust those markers and do
+    # not infer additional settings from arbitrary visible text.
+    if not setting_markers:
+        for line_number, line in enumerate(lines, 1):
+            match = re.match(
+                r"^\s*([A-Za-z][A-Za-z0-9_.-]{0,63})\s+"
+                r"(#[0-9a-fA-F]{6}|[-+]?\d+(?:\.\d+)?|true|false|yes|no|on|off)"
+                r"\s*(?:#.*)?$",
+                line,
+                re.I,
             )
+            if match:
+                _add_record(
+                    records, seen, app_id, match.group(1), match.group(2),
+                    source_id, line_number,
+                )
 
     # Sphinx configuration pages commonly expose:
     # name, "¶", name, default, description.
@@ -306,9 +310,17 @@ def extract_parameters(
             else len(lines)
         )
         block = lines[index + 3:next_marker]
+        # Do not treat the first fragment of a wrapped/multi-value default as
+        # the complete value (for example, "0" followed by ".0 0.0").
+        wrapped_numeric_default = (
+            re.fullmatch(r"[-+]?\d+(?:\.\d+)?", default)
+            and index + 3 < len(lines)
+            and re.fullmatch(r"\.\d+(?:\s+.*)?", lines[index + 3])
+        )
         if (
             name == repeated_name
             and SETTING_NAME.fullmatch(name)
+            and not wrapped_numeric_default
             and re.fullmatch(
                 r"#[0-9a-fA-F]{6}|[-+]?\d+(?:\.\d+)?|true|false|yes|no|on|off|[A-Za-z][A-Za-z0-9_.-]*",
                 default,
@@ -324,10 +336,18 @@ def extract_parameters(
         # heading, "¶", name, ",", name, "¶", name, default, name, default.
         group_end = next_marker
         group = lines[index + 1:group_end]
+        if not _safe_name(name):
+            continue
         for offset, candidate in enumerate(group[:-1]):
             if not SETTING_NAME.fullmatch(candidate):
                 continue
             candidate_default = group[offset + 1]
+            if (
+                re.fullmatch(r"[-+]?\d+(?:\.\d+)?", candidate_default)
+                and offset + 2 < len(group)
+                and re.fullmatch(r"\.\d+(?:\s+.*)?", group[offset + 2])
+            ):
+                continue
             if re.fullmatch(
                 r"#[0-9a-fA-F]{6}|[-+]?\d+(?:\.\d+)?|true|false|yes|no|on|off",
                 candidate_default,
