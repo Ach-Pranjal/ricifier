@@ -1,8 +1,24 @@
 import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
 import "./preview.css";
 import { Link } from "react-router-dom";
 
 function Preview() {
+    const [greetMsg, setGreetMsg] = useState("");
+    const [name, setName] = useState("");
+
+    async function greet() {
+        setGreetMsg(await invoke("greet", { name }));
+    }
+
+    async function runPython() {
+        try {
+        const result = await invoke("run_python", { name });
+        setGreetMsg(result);
+        } catch (error) {
+        setGreetMsg(`Error: ${error}`);
+        }
+    }
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
