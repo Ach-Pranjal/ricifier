@@ -43,6 +43,10 @@ def _parse_args() -> argparse.Namespace:
         help="Apps to generate (default: all five)",
     )
     parser.add_argument(
+        "--gemini-configs", action="store_true",
+        help="ask Gemini for per-app appearance refinements",
+    )
+    parser.add_argument(
         "--out",
         type=Path,
         default=Path("output"),
@@ -53,10 +57,11 @@ def _parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = _parse_args()
+    import ml_model as mm
+
     if bool(args.wallpaper) == bool(args.mood_json):
         print("ERROR: provide exactly one of a wallpaper image or --mood-json.", file=sys.stderr)
         return 2
-
     try:
         if args.mood_json:
             if not args.mood_json.is_file():
@@ -74,8 +79,6 @@ def main() -> int:
             if not args.wallpaper.is_file():
                 print(f"ERROR: wallpaper does not exist: {args.wallpaper}", file=sys.stderr)
                 return 2
-            import ml_model as mm
-
             data = args.wallpaper.read_bytes()
             palette = extract_palette(args.wallpaper)
             mood = mm.analyze_wallpaper(data)
@@ -92,6 +95,11 @@ def main() -> int:
             apps=apps,
             errors=errors,
         )
+        if args.gemini_configs:
+            configs = mm.refine_configs_with_gemini(
+                data if not args.mood_json else None,
+                mood, theme, aesthetic, configs, apps,
+            )
         if errors:
             for name, message in errors.items():
                 print(f"ERROR: {name}: {message}", file=sys.stderr)

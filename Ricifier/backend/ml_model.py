@@ -420,6 +420,100 @@ def generate_aesthetic(data, mood, theme, palette):
     }
 
 
+APP_CONFIG_PROMPT = """You are implementing a Linux desktop design for several applications.
+Mood: <<MOOD>>
+Theme: <<THEME>>
+Aesthetic: <<AESTHETIC>>
+Application parameter schemas: <<SCHEMAS>>
+Existing safe baseline settings: <<BASELINE>>
+
+Decide the best implementation of the mood and aesthetic for every selected
+application. Use the application's parameter schema to select values that
+make the design coherent and functional. Return ONLY a JSON object whose keys
+are application names and whose values are objects containing only keys from
+that application's schema. You may choose any schema parameter, not only one
+already present in the baseline.
+
+Rules:
+- Keep values compatible with the declared types and ranges.
+- Prefer the existing baseline when a parameter is unrelated to the design.
+- Change appearance, layout, spacing, typography, colors, opacity, effects,
+  tabs, bars, modules, and launcher states when those parameters support the
+  requested aesthetic.
+- Treat spacing as a coordinated design system, not as isolated values:
+  softer, calmer, or glass-like moods generally deserve more breathing room;
+  dense, sharp, retro, cyberpunk, or brutalist moods generally deserve tighter
+  spacing. For Polybar, `workspace_padding` controls the visible gap between
+  i3 workspace labels, while `module_margin` and `module_spacing` control gaps
+  between separate Polybar modules. Choose them independently but coherently.
+- Use the mood's contrast and the aesthetic's geometry when deciding these
+  values. Do not remove workspace separation merely because the overall bar
+  spacing is compact.
+- Do not add commands, scripts, includes, bindings, arbitrary module
+  definitions, network settings, or unknown keys.
+"""
+
+
+def refine_configs_with_gemini(
+    data, mood, theme, aesthetic, configs, apps,
+):
+    """Ask Gemini for safe per-app refinements, then re-render through validators."""
+    from app_configs import APP_SPECS, render_config
+
+    baseline = {name: config["settings"] for name, config in configs.items()}
+    schemas = {
+        name: {
+            key: (
+                list(kind) if isinstance(kind, frozenset)
+                else list(kind) if isinstance(kind, tuple)
+                else kind
+            )
+            for key, kind in APP_SPECS[name]["keys"].items()
+        }
+        for name in configs
+    }
+    prompt = (APP_CONFIG_PROMPT
+              .replace("<<MOOD>>", json.dumps(mood))
+              .replace("<<THEME>>", json.dumps(theme))
+              .replace("<<AESTHETIC>>", json.dumps(aesthetic))
+              .replace("<<SCHEMAS>>", json.dumps(schemas))
+              .replace("<<BASELINE>>", json.dumps(baseline)))
+    contents = [prompt] if data is None else [_load_image(data), prompt]
+    raw = _parse_json(_generate(contents))
+    if not isinstance(raw, dict):
+        raise ValueError("Gemini config refinement was not a JSON object")
+
+    refined = {}
+    for name, config in configs.items():
+        overrides = raw.get(name, {})
+        if not isinstance(overrides, dict):
+            raise ValueError(f"Gemini config refinement for {name} must be an object")
+        unknown = set(overrides) - set(APP_SPECS[name]["keys"])
+        if unknown:
+            raise ValueError(
+                f"Gemini suggested unsupported {name} settings: {', '.join(sorted(unknown))}"
+            )
+        settings = dict(config["settings"])
+        settings.update(overrides)
+        notes = list(config.get("notes", []))
+        text = render_config(name, settings, notes)
+        reasons = dict(config.get("reasons", {}))
+        for key in overrides:
+            reasons[key] = {
+                "reason": "Gemini selected this value from the supplied mood, aesthetic, and app parameter schema.",
+                "source": "gemini",
+            }
+        refined[name] = {
+            **config,
+            "settings": settings,
+            "reasons": reasons,
+            "notes": notes,
+            "text": text,
+            "gemini_refined": bool(overrides),
+        }
+    return refined
+
+
 # ---------- step 4: layout, shape and fonts ----------
 FONT_CATALOG = (
     "JetBrains Mono",
@@ -563,6 +657,8 @@ def main(argv=None):
                         help="output directory (default: output)")
     parser.add_argument("--apps", nargs="+", choices=sorted(APP_SPECS),
                         help="apps to generate (default: detected apps)")
+    parser.add_argument("--gemini-configs", action="store_true",
+                        help="ask Gemini for per-app appearance refinements")
     parsed = parser.parse_args(list(sys.argv[1:] if argv is None else argv))
     if bool(parsed.wallpaper) == bool(parsed.mood_json):
         parser.error("provide exactly one of a wallpaper path or --mood-json")
@@ -590,6 +686,11 @@ def main(argv=None):
         else:
             apps = detect_apps()
         configs = generate_configs(theme, aesthetic, mood=mood, apps=apps)
+        if parsed.gemini_configs:
+            configs = refine_configs_with_gemini(
+                data if not parsed.mood_json else None,
+                mood, theme, aesthetic, configs, apps,
+            )
         write_configs(configs, output_dir=output_dir)
         if not parsed.mood_json:
             output_dir.mkdir(parents=True, exist_ok=True)

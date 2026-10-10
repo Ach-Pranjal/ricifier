@@ -25,26 +25,43 @@ window {
 }
 
 mainbox {
+  background-color: @bg;
   spacing: 8px;
+  padding: 0;
+}
+
+inputbar {
+  background-color: @bg;
+  text-color: @fg;
+  spacing: 8px;
+  padding: 0;
 }
 
 listview {
+  background-color: @bg;
   spacing: 8px;
+  padding: 0;
+  columns: 1;
+  lines: 8;
 }
 
 element {
   text-color: @fg;
-  background-color: transparent;
+  background-color: @bg;
+  padding: 12px;
+  border-radius: 4px;
 }
 
 element selected.normal {
   background-color: @selected;
   text-color: @seltext;
+  border-radius: 4px;
 }
 
 element selected.active {
   background-color: @selected-active;
   text-color: @seltext;
+  border-radius: 4px;
 }
 
 element urgent {
