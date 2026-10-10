@@ -1,49 +1,17 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { HashRouter, Routes, Route } from "react-router-dom";
+import Landing from "./pages/landing/landing.jsx";
+import Selection from "./pages/selection/selection.jsx";
+import Preview from "./pages/preview/preview.jsx";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-
-  async function greet() {
-    setGreetMsg(await invoke("greet", { name }));
-  }
-
-  async function runPython() {
-    try {
-      const result = await invoke("run_python", { name });
-      setGreetMsg(result);
-    } catch (error) {
-      setGreetMsg(`Error: ${error}`);
-    }
-  }
-
   return (
-    <main className="container">
-      <h1>Test</h1>
-
-      <div className="row">
-      </div>
-      <p>Enter Your Name</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          runPython();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/selection" element={<Selection />} />
+        <Route path="/preview" element={<Preview />} />
+      </Routes>
+    </HashRouter>
   );
 }
 
