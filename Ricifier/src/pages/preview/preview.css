@@ -133,6 +133,7 @@
 }
 
 .right-panel {
+  isolation: isolate;
   width: 52%;
   display: flex;
   align-items: flex-start;
@@ -144,16 +145,17 @@
   position: relative;
   width: min(38vw, 38rem);
   min-width: 25rem;
-  height: min(40vw, 31rem);
+  aspect-ratio: 4 / 3;
   border: 1px solid #0f0f0f;
   border-radius: 4px;
   background: transparent;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
   cursor: pointer;
+  z-index: 0;
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -171,7 +173,14 @@
 }
 
 .image-card::before {
-  content: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid #888888;
+  border-radius: 4px;
+  background: #e7e7e7;
+  transform: translate(0.9rem, 0.9rem);
 }
 
 .image-input {
@@ -187,6 +196,8 @@
   height: 100%;
   object-fit: contain;
   display: block;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
 .image-card:not(.has-image)::after {
@@ -197,6 +208,10 @@
   transform: translateX(-50%);
   color: #666666;
   font-size: 0.9rem;
+}
+
+.image-card.has-image::after {
+  content: none;
 }
 
 .image-label {
@@ -267,6 +282,5 @@
   .image-card {
     width: min(80vw, 30rem);
     min-width: 15rem;
-    height: 22rem;
   }
 }

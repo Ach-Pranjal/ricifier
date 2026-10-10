@@ -11,8 +11,7 @@ function Landing() {
 
       <section className="landing-hero">
         <div className="hero-copy">
-          <p className="eyebrow">01 / make it yours</p>
-          <h1>Rice your<br /><em>Linux.</em></h1>
+          <h1>Ricing<br /><em>Made Easy.</em></h1>
           <p className="hero-description">
             Build a desktop that feels like home. Choose your setup,
             preview your files, and shape every detail of your environment.
@@ -30,22 +29,25 @@ function Landing() {
             <span className="terminal-dot" />
             <span className="terminal-title">~ / .config</span>
           </div>
-          <pre>{`$ ricifier init
+          <pre>{`[module/filesystem]
+type = internal/fs
+interval = 25
 
-  selecting a style...
-  [ok] minimal
-  [ok] monochrome
-  [ok] yours
+mount-0 = /
 
-  ready when you are_`}</pre>
+label-mounted = %{F#F0C674}%mountpoint%%{F-} %percentage_used%%
+
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = {colors.disabled}`}</pre>
           <div className="terminal-line" />
         </div>
       </section>
 
       <footer className="landing-footer">
-        <span>your workflow / your rules</span>
         <span className="footer-line" />
-        <span>v 0.1</span>
+        <span>Cook your Rice</span>
+        <span className="footer-line" />
+        <span></span>
       </footer>
     </main>
   );

@@ -20,6 +20,7 @@ function Preview() {
         }
     }
   const [imageUrl, setImageUrl] = useState("");
+  const [imageSize, setImageSize] = useState(null);
 
   useEffect(() => {
     return () => {
@@ -42,6 +43,7 @@ function Preview() {
       }
       return URL.createObjectURL(file);
     });
+    setImageSize(null);
   }
 
   return (
@@ -56,27 +58,27 @@ function Preview() {
               <label className="check-option">
                 <input type="checkbox" name="options" value="option1" />
                 <span className="check-box" />
-                Option 1
+                Kitty
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option2" />
                 <span className="check-box" />
-                Option 1
+                i3
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option3" />
                 <span className="check-box" />
-                Option 1
+                Polybar
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option4" />
                 <span className="check-box" />
-                Option 1
+                Rofi
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option5" />
                 <span className="check-box" />
-                Option 1
+                Picom
               </label>
             </div>
           </fieldset>
@@ -88,9 +90,22 @@ function Preview() {
         </div>
 
         <div className="right-panel">
-          <label className={`image-card${imageUrl ? " has-image" : ""}`}>
+          <label
+            className={`image-card${imageUrl ? " has-image" : ""}`}
+            style={imageSize ? { aspectRatio: `${imageSize.width} / ${imageSize.height}` } : undefined}
+          >
             {imageUrl ? (
-              <img className="image-preview" src={imageUrl} alt="Selected preview" />
+              <img
+                className="image-preview"
+                src={imageUrl}
+                alt="Selected preview"
+                onLoad={(event) => {
+                  setImageSize({
+                    width: event.currentTarget.naturalWidth,
+                    height: event.currentTarget.naturalHeight,
+                  });
+                }}
+              />
             ) : (
               <>
                 <span className="image-label">Image insert and preview</span>
