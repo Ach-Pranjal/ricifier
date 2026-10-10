@@ -1,0 +1,97 @@
+import { useEffect, useState } from "react";
+import "./preview.css";
+import { Link } from "react-router-dom";
+
+function Preview() {
+  const [imageUrl, setImageUrl] = useState("");
+
+  useEffect(() => {
+    return () => {
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl);
+      }
+    };
+  }, [imageUrl]);
+
+  function handleImageChange(event) {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    setImageUrl((currentUrl) => {
+      if (currentUrl) {
+        URL.revokeObjectURL(currentUrl);
+      }
+      return URL.createObjectURL(file);
+    });
+  }
+
+  return (
+    <div className="preview-page">
+      <div className="preview-content">
+        <div className="left-panel">
+          <div className="text-title">Ricify</div>
+
+          <fieldset className="checklist-wrap">
+            <legend className="check-label">Options</legend>
+            <div className="check-stack" aria-label="checkboxes">
+              <label className="check-option">
+                <input type="checkbox" name="options" value="option1" />
+                <span className="check-box" />
+                Option 1
+              </label>
+              <label className="check-option">
+                <input type="checkbox" name="options" value="option2" />
+                <span className="check-box" />
+                Option 1
+              </label>
+              <label className="check-option">
+                <input type="checkbox" name="options" value="option3" />
+                <span className="check-box" />
+                Option 1
+              </label>
+              <label className="check-option">
+                <input type="checkbox" name="options" value="option4" />
+                <span className="check-box" />
+                Option 1
+              </label>
+              <label className="check-option">
+                <input type="checkbox" name="options" value="option5" />
+                <span className="check-box" />
+                Option 1
+              </label>
+            </div>
+          </fieldset>
+            <Link to="/selection">
+          <button type="button" className="submit-btn">
+            Next
+          </button>
+          </Link>
+        </div>
+
+        <div className="right-panel">
+          <label className={`image-card${imageUrl ? " has-image" : ""}`}>
+            {imageUrl ? (
+              <img className="image-preview" src={imageUrl} alt="Selected preview" />
+            ) : (
+              <>
+                <span className="image-label">Image insert and preview</span>
+                <span className="image-plus" aria-hidden="true" />
+              </>
+            )}
+            <input
+              className="image-input"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </label>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Preview;
