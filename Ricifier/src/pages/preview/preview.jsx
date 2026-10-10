@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./preview.css";
+import { Link } from "react-router-dom";
 
 function Preview() {
   const [imageUrl, setImageUrl] = useState("");
@@ -38,35 +39,36 @@ function Preview() {
             <div className="check-stack" aria-label="checkboxes">
               <label className="check-option">
                 <input type="checkbox" name="options" value="option1" />
-                Option 1
                 <span className="check-box" />
+                Option 1
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option2" />
-                Option 1
                 <span className="check-box" />
+                Option 1
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option3" />
-                Option 1
                 <span className="check-box" />
+                Option 1
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option4" />
-                Option 1
                 <span className="check-box" />
+                Option 1
               </label>
               <label className="check-option">
                 <input type="checkbox" name="options" value="option5" />
-                Option 1
                 <span className="check-box" />
+                Option 1
               </label>
             </div>
           </fieldset>
-
+            <Link to="/selection">
           <button type="button" className="submit-btn">
             Next
           </button>
+          </Link>
         </div>
 
         <div className="right-panel">
